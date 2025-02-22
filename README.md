@@ -1,4 +1,4 @@
-# Project name??
+# Sterna 
 
 An open-source set of modules for database migration.  
 
@@ -196,7 +196,7 @@ This will process the CSV files as per the specified configuration in `config.ym
 ### Internals
 
 The diagram below illustrates the simplified flow of the **CSV Loader**:
-![Description](README_resources/csv_loader.svg)
+![Description](docs/images/csv_loader.svg)
 
 
 1. **Initial Execution**  
@@ -270,7 +270,7 @@ def exec(inputs, outputs):
 ```
 
 The diagram below illustrates the definition of `rule_1` presented in the configuration example.
-![Description](README_resources/data_migration_rule.svg)
+![Description](docs/images/data_migration_rule.svg)
 
 
 
