@@ -1,0 +1,67 @@
+# Database connection configurations
+databases_connections:
+  database_alias_name:
+    host: localhost
+    port: 5432
+    user: your_username
+    database: your_database
+    password: your_password
+    schema: public
+    type: postgresql
+  
+  another_database:
+    host: localhost
+    port: 5432
+    user: your_username
+    database: your_database
+    password: your_password
+    schema: your_schema
+    type: postgresql
+
+# System logging configurations
+system_logging:
+  console_log:
+    levels:
+      - INFO
+      - ERROR
+      - WARNING
+      - DEBUG
+
+# Data migration configurations
+data_migration:
+  buffer_size: 10000
+  bulk_commit: false
+  rules:
+    rule_1:
+      inputs:
+        database_alias_name:
+          - select * from table_1
+          - select ... inner join ..
+        database_1:
+          - select * from table_2
+      outputs:
+        database_2:
+          - table_3
+          - table_4
+
+
+# CSV loader configurations
+csv_loader:
+  target_database: another_database
+  buffer_size: 10000
+  bulk_commit: false
+  csv_files:
+    - path: path/to/your/csv_file_1.csv
+      target_table: table_1
+    - path: path/to/your/csv_file_2.csv
+      target_table: table_2
+    - path: path/to/your/csv_file_3.csv
+      target_table: table_3
+    - path: path/to/your/csv_file_4.csv
+      target_table: table_4
+      replace_columns_values:
+        column_1: '[private_data]'
+        column_2: '[private_data]'
+      delimiter: ','
+      quotechar: '"'
+      encoding: utf-8
