@@ -1,6 +1,6 @@
-import sys
 import traceback
 import time
+import sys
 
 from system_logging.log_manager import log, Level
 from configs.yaml_manager import load_csv_loader
@@ -10,9 +10,7 @@ from csv_loader.csv_to_database import csv_importer
 if __name__ == "__main__":
     try:
         start_time = time.perf_counter()
-         
-        #target_credentials, buffer_size, bulk_commit, csv_files = load_csv_loader()
-        #csv_importer(credentials=target_credentials, buffer_size=buffer_size, bulk_commit=bulk_commit, csv_files=csv_files)
+        
         csv_importer(**load_csv_loader())
         
         end_time = time.perf_counter()

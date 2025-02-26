@@ -1,4 +1,3 @@
-from system_logging.console_log import ConsoleLog
 from configs.yaml_manager import load_system_logging
 
 class Level:
@@ -30,11 +29,11 @@ class LogManager:
             LogManager: The singleton instance of LogManager.
         """
         if cls._instance is None:
-            print('Creating LogManager instance')
+            #print('Creating LogManager instance')
             cls._instance = super(LogManager, cls).__new__(cls)
             cls._instance.observers = []
-        if configs is not None:
-            print('Loading system logging CONFIGSSSSS')
+        if configs is None:
+            #print('Loading system logging CONFIGS')
             load_system_logging(cls._instance, configs=configs)
         return cls._instance
 
