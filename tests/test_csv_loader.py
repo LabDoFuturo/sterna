@@ -1,50 +1,95 @@
 import unittest
-import yaml
-from io import StringIO
+from unittest.mock import MagicMock, patch
+import pandas as pd
 from data_access.db_credentials import DBCredentials
-from data_migration.mapper import Mapper
-from data_migration.rule import Rule
-from configs.yaml_manager import load_credentials, load_csv_loader
-from system_logging.log_manager import LogManager
 from csv_loader.csv_to_database import csv_importer  
 
+
 class TestCSVLoader(unittest.TestCase):
-    def setUp(self):
-        self.config_yaml = """
-# Database connection configurations
-databases_connections:
-  database_1:
-    host: localhost
-    port: 5432
-    user: your_username
-    database: your_database
-    password: your_password
-    schema: public
-    type: postgresql
- 
-# System logging configurations
-system_logging:
-  console_log:
-    levels:
-      - INFO
-      - ERROR
-      - WARNING
-      - DEBUG
+    
+    def setUp(self):   
+      self.credentials = DBCredentials(
+          name="teste_db",
+          host="localhost",
+          port=5432,
+          user="your_username",
+          password="you_password",
+          database="test_database",
+          schema="public",
+          type="postgresql"
+      )
+
+      self.csv_files = [
+          {
+              "path": "test1.csv",
+              "target_table": "test_table",
+              "encoding": "utf-8",
+              "delimiter": ",",
+              "quotechar": '"',
+              "replace_columns_values": None 
+          },
+          {
+              "path": "test2.csv",
+              "target_table": "test2_table",
+              "encoding": "utf-8",
+              "delimiter": ",",
+              "quotechar": '"',
+              "replace_columns_values": None 
+          }
+      ]
       
-# CSV loader configurations
-csv_loader:
-  target_database: database_1
-  buffer_size: 10000
-  bulk_commit: false
-  csv_files:
-    - path: path/to/your/csv_file_1.csv
-      target_table: table_1
-  """
-        self.configs = yaml.safe_load(StringIO(self.config_yaml))
 
-    def test_csv(self):
-        credential = load_credentials(self.configs)["database_1"]
-        params = load_csv_loader(self.configs)
+    def test_csv_loader_with_no_files(self):              
+        with self.assertRaises(Exception) as context:
+            csv_importer(credentials={}, csv_files=None)        
+        self.assertEqual(str(context.exception), "[csv_loader] No CSV files found")
+    
+    @patch("csv_loader.csv_to_database.pd.read_csv")
+    @patch("csv_loader.csv_to_database.process_row")
+    @patch("data_access.db_factory.DatabaseFactory.create")
+    def test_csv_loader_success(self, mock_db_create, mock_process_row, mock_read_csv):
+        mock_db = MagicMock()
+        mock_writer = MagicMock()
+        mock_db.writer.return_value = mock_writer
+        mock_db_create.return_value = mock_db
 
-if __name__ == '__main__':
+        mock_db.metadata.return_value.get_table_columns.return_value = ["id", "name", "email"]
+
+        mock_read_csv.return_value = pd.DataFrame([
+            {"id": 6786, "name": "João Guimarães", "email": "jg@example.com"},
+            {"id": 86756, "name": "Maria Cristina", "email": "mc@example.com"} 
+        ])
+
+        mock_process_row.side_effect = lambda row, columns, replace : row
+        
+        csv_importer(credentials=self.credentials, csv_files=self.csv_files)
+
+        mock_db.create_connection.assert_called_once()
+        mock_db.writer.assert_called()
+        self.assertEqual(mock_writer.insert.call_count, 4)
+        mock_writer.flush_buffer.assert_called()
+        mock_writer.commit.assert_called()
+        mock_db.close_connection.assert_called_once()
+
+    @patch("csv_loader.csv_to_database.pd.read_csv")
+    @patch("data_access.db_factory.DatabaseFactory.create")   
+    def test_csv_loader_no_columns(self, mock_db_create, mock_read_csv):
+      mock_db = MagicMock()
+      mock_writer = MagicMock()
+
+      mock_db.writer.return_value = mock_writer
+      mock_db_create.return_value = mock_db
+
+      mock_db.metadata.return_value.get_table_columns.return_value = []
+
+      mock_read_csv.return_value = pd.DataFrame([
+            {"id": 6786, "name": "João Guimarães", "email": "jg@example.com"},
+            {"id": 86756, "name": "Maria Cristina", "email": "mc@example.com"} 
+        ]) 
+      
+      with self.assertRaises(Exception) as context:
+        csv_importer(credentials=self.credentials, csv_files=self.csv_files)       
+      self.assertTrue("[csv_loader] Error: No columns found for table" in str(context.exception))  
+
+if __name__ == "__main__":
     unittest.main()
