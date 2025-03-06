@@ -100,7 +100,7 @@ class PostgreSQLTableManager:
             log(Level.DEBUG, f"Query: {sql}")
             self.cursor.execute(sql)
             self.postgresql.connection.commit()
-            log(Level.DEBUG, f"Table {self.schema}{self.table_name} truncated.")
+            log(Level.INFO, f"Table {self.schema}{self.table_name} truncated.")
         except Exception as e:
             log(Level.ERROR, f"Error truncating PostgreSQL table:")
             raise e
@@ -118,7 +118,7 @@ class PostgreSQLTableManager:
             log(Level.DEBUG, f"Query: {sql}")
             self.cursor.execute(sql)
             self.postgresql.connection.commit()
-            log(Level.DEBUG, f"Sequence for table {self.schema}{self.table_name} reset.")
+            log(Level.INFO, f"Sequence for table {self.schema}{self.table_name} reset.")
         except Exception as e:
             log(Level.ERROR, f"Error resetting sequence for PostgreSQL table:")
             raise e
@@ -154,7 +154,7 @@ class PostgreSQLTableManager:
             log(Level.DEBUG, f"Query: {sql}")
             self.cursor.execute(sql, (value,))
             self.postgresql.connection.commit()
-            log(Level.DEBUG, f"Sequence value for table {self.schema}{self.table_name} set to {value}.")
+            log(Level.INFO, f"Sequence value for table {self.schema}{self.table_name} set to {value}.")
         except Exception as e:
             log(Level.ERROR, f"Error setting sequence value for PostgreSQL table")
             raise e

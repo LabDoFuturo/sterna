@@ -74,6 +74,8 @@ class PostgreSQLWriter:
         Inserts a row of data into the buffer. If the buffer size is reached, flushes the buffer.
 
         """
+        if isinstance(data, dict):
+            data = [data[column.name] for column in self.table.columns]
         self.buffer.append(data)
         if len(self.buffer) >= self.buffer_size:
             return self.flush_buffer()

@@ -66,8 +66,8 @@ class Mapper:
                     output.credentials,
                     buffer_size=self.buffer_size,
                     bulk_commit=self.bulk_commit,
-                    table=Table(output.table, 0)
-                    #table_name=output.table,
+                    table=Table(output.table, 0),
+                    table_name=output.table,
                     ))
                 
             
