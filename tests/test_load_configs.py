@@ -5,7 +5,7 @@ from data_access.db_credentials import DBCredentials
 from data_migration.mapper import Mapper
 from data_migration.rule import Rule
 from configs.yaml_manager import load_credentials, load_csv_loader
-from system_logging.log_manager import LogManager  
+from system_logging.log_manager import instance, Level, log
 
 class TestConfigLoaders(unittest.TestCase):
     def setUp(self):
@@ -86,7 +86,12 @@ csv_loader:
         self.assertIsInstance(credentials['database_alias_name'], DBCredentials)
 
     def test_load_csv_loader(self):
-        target_credentials, buffer_size, bulk_commit, csv_files = load_csv_loader(self.configs)
+        load_csv_return = (load_csv_loader(self.configs))
+        target_credentials = load_csv_return['credentials']
+        buffer_size = load_csv_return['buffer_size']
+        bulk_commit = load_csv_return['bulk_commit']
+        csv_files = load_csv_return['csv_files']
+        
         self.assertIsInstance(target_credentials, DBCredentials)
         self.assertEqual(buffer_size, 10000)
         self.assertFalse(bulk_commit)
@@ -94,8 +99,12 @@ csv_loader:
         self.assertEqual(len(csv_files), 4)
 
     def test_load_system_logging(self):
-        log_manager = LogManager()  
+        log_manager = instance()  
         self.assertEqual(len(log_manager.observers), 1)
+        log(Level.INFO, 'INFO MSG')
+        log(Level.DEBUG, 'DEBUG MSG')  # Should not be displayed since DEBUG is commented out
+        log(Level.ERROR, 'ERROR MSG')
+        log(Level.WARNING, 'WARNING MSG')
 
     def test_load_data_migration(self):
         mapper = Mapper(configs=self.configs)

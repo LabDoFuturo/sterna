@@ -21,7 +21,7 @@ class LogManager:
     """
     _instance = None
 
-    def __new__(cls, configs=None):
+    def __new__(cls):
         """
         Creates a new instance of LogManager if one does not already exist.
 
@@ -29,14 +29,16 @@ class LogManager:
             LogManager: The singleton instance of LogManager.
         """
         if cls._instance is None:
-            #print('Creating LogManager instance')
+            print("Creating LogManager instance")
             cls._instance = super(LogManager, cls).__new__(cls)
             cls._instance.observers = []
-        if configs is None:
-            #print('Loading system logging CONFIGS')
-            load_system_logging(cls._instance, configs=configs)
+            load_system_logging(cls._instance, configs=None)
         return cls._instance
-
+    
+    def set_configs(self, configs):
+        # print("Setting LogManager configurations")
+        load_system_logging(self._instance, configs=configs)
+        
     def add_observer(self, observer):
         """
         Adds an observer to the list.
@@ -58,6 +60,7 @@ class LogManager:
         """
         for observer in self.observers:
             observer.record(level, msg)
+    
 
 def log(level, msg):
     """
@@ -65,3 +68,10 @@ def log(level, msg):
     
     """
     LogManager().log(level, msg)
+
+def instance():
+    """
+    Returns the LogManager singleton instance.
+    
+    """
+    return LogManager()

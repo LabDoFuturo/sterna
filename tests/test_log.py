@@ -1,7 +1,7 @@
 import unittest
 import yaml
 from io import StringIO
-from system_logging.log_manager import LogManager, Level, log
+from system_logging.log_manager import instance, Level, log
 from system_logging.console_log import ConsoleLog
 import sys
 import io
@@ -11,7 +11,7 @@ class TestLog(unittest.TestCase):
         # Set up YAML configuration as a string
         self.config_yaml = """
             system_logging:
-                console_log2:
+                console_log:
                     levels:
                     - INFO
                     - ERROR
@@ -27,17 +27,18 @@ class TestLog(unittest.TestCase):
     def tearDown(self):
         # Restore stdout to its original state after the test
         sys.stdout = sys.__stdout__
+        pass
 
     def test_system_console_log(self):
         # Initialize LogManager with the configurations
-        LogManager(configs=self.configs)
+        instance().set_configs(self.configs)
         
         find_console_observer = False
-        for observer in LogManager().observers:
+        for observer in instance().observers:
             if isinstance(observer, ConsoleLog):
                 find_console_observer = True
                 break
-    
+            
         if not find_console_observer:
             self.skipTest('ConsoleLog observer not found in LogManager') 
             return     
@@ -56,6 +57,8 @@ class TestLog(unittest.TestCase):
         self.assertNotIn('DEBUG MSG', output)  # DEBUG should not be present
         self.assertIn('ERROR MSG', output)  # ERROR should be present
         self.assertIn('WARNING MSG', output)  # WARNING should be present
+        
+        
 
 if __name__ == '__main__':
     unittest.main()
