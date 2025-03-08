@@ -12,6 +12,42 @@ An open-source set of modules for database migration.
 
 ## Getting Started  
 
+###  Setting up the Virtual Environment 
+
+First, let's start by installing the module virtualenv (skip this step if you have already installed it):
+
+```bash
+ pip install virtualenv
+```
+
+Now, navigate to your project's folder and run the following command to create the virtual environment:
+
+```bash
+ python<version> -m venv <virtual-environment-name>
+```
+
+If you are using Windows (CMD or Powershell), activate it with:
+
+```bash
+ venv\Scripts\activate
+```
+
+On Linux/Mac (bash/zsh terminal):
+
+```bash
+ source venv/bin/activate
+```
+
+After that, just install the required packages:
+
+```bash
+ pip install -r requirements.txt
+```
+
+
+
+### Setting up the private directory
+
 To ensure data privacy and prevent the exposure of sensitive database information, the system restricts access to such details. All sensitive data must be stored within a designated directory.  
 
 1. Create a directory named `private`.  
