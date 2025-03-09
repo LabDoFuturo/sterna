@@ -4,7 +4,7 @@ from io import StringIO
 from data_access.db_credentials import DBCredentials
 from data_migration.mapper import Mapper
 from data_migration.rule import Rule
-from configs.yaml_manager import load_credentials, load_csv_loader
+from configs.yaml_manager import load_credentials, load_csv_loader, get_rules_folder
 from system_logging.log_manager import instance, Level, log
 
 class TestConfigLoaders(unittest.TestCase):
@@ -107,7 +107,9 @@ csv_loader:
         log(Level.WARNING, 'WARNING MSG')
 
     def test_load_data_migration(self):
-        mapper = Mapper(configs=self.configs)
+        mapper = Mapper()
+        mapper.set_configs(self.configs)
+        
         self.assertEqual(mapper.buffer_size, 10000)
         self.assertFalse(mapper.bulk_commit)
         self.assertIsInstance(mapper.rules, list)

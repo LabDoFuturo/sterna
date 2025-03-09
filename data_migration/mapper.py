@@ -1,7 +1,7 @@
 import os
 import time
 import importlib.util
-from configs.yaml_manager import load_data_migration
+from configs.yaml_manager import load_data_migration, get_rules_folder
 from system_logging.log_manager import log, Level
 from data_access.db_factory import DatabaseFactory
 from data_access.metadata_models import Table
@@ -10,8 +10,9 @@ class Mapper:
     A singleton class to manage mapping processes.
     """
     _instance = None
+    
 
-    def __new__(cls, configs=None):
+    def __new__(cls):
         """
         Creates a new instance of Mapper if one does not already exist.
 
@@ -23,11 +24,19 @@ class Mapper:
             cls._instance.rules = []
             cls._instance.buffer_size = 1000
             cls._instance.bulk_commit = False
-            load_data_migration(cls._instance, configs=configs)   
+            load_data_migration(cls._instance, configs=None)   
             log(Level.DEBUG, f'[data_migration] Starting mapping process (buffer_size: {cls._instance.buffer_size}, bulk_commit: {cls._instance.bulk_commit})\n')
             for rule in cls._instance.rules:
                 log(Level.DEBUG, rule)      
         return cls._instance
+    
+    def set_configs(self,configs):
+        self._instance.rules = []
+        self._instance.buffer_size = 1000
+        self._instance.bulk_commit = False
+        load_data_migration(self._instance, configs=configs)
+        log(Level.DEBUG, f'[data_migration] Starting mapping process (buffer_size: {self._instance.buffer_size}, bulk_commit: {self._instance.bulk_commit})\n')
+        
 
     def start_migration(self):
         log(Level.INFO, '[data_migration] Starting data migration\n')
@@ -36,7 +45,7 @@ class Mapper:
             start_time = time.perf_counter()
 
             # Check if the corresponding rule file exists
-            rule_file = f"private/rules/{rule.name}.py"
+            rule_file = f"{get_rules_folder()}/{rule.name}.py"
             
             if not os.path.isfile(rule_file):
                 raise FileNotFoundError(f"Rule file {rule_file} not found")

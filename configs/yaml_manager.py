@@ -3,7 +3,21 @@ from data_access.db_credentials import DBCredentials
 from system_logging.console_log import ConsoleLog
 from data_migration.rule import Rule, Input, Output
 
-GENERAL_CONFIGS_FILE = "private/configs.yml"
+PRIVATE_FOLDER = "private"
+RULES_FOLDER = f"{PRIVATE_FOLDER}/rules"
+GENERAL_CONFIGS_FILE = f"{PRIVATE_FOLDER}/configs.yml"
+
+
+def update_private_folder(folder):
+    global PRIVATE_FOLDER
+    global RULES_FOLDER
+    global GENERAL_CONFIGS_FILE
+    PRIVATE_FOLDER = folder
+    RULES_FOLDER = f"{PRIVATE_FOLDER}/rules"
+    GENERAL_CONFIGS_FILE = f"{PRIVATE_FOLDER}/configs.yml"
+    
+def get_rules_folder():
+    return RULES_FOLDER
 
 def load_yaml_file(file_path):
     configs = None
@@ -71,7 +85,7 @@ def load_system_logging(log_manager,configs=None):
 def load_data_migration(mapper,configs=None):
     if configs is None:
         configs = load_yaml_file(GENERAL_CONFIGS_FILE)
-    
+             
     data_migration = configs.get('data_migration', {})
     rules = data_migration.get('rules', {})
     
