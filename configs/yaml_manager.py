@@ -2,10 +2,12 @@ import yaml
 from data_access.db_credentials import DBCredentials
 from system_logging.console_log import ConsoleLog
 from data_migration.rule import Rule, Input, Output
+import os
 
 PRIVATE_FOLDER = "private"
 RULES_FOLDER = f"{PRIVATE_FOLDER}/rules"
 GENERAL_CONFIGS_FILE = f"{PRIVATE_FOLDER}/configs.yml"
+SENSOR_FILENAME = "sensor.yml"
 
 
 def update_private_folder(folder):
@@ -18,6 +20,9 @@ def update_private_folder(folder):
     
 def get_rules_folder():
     return RULES_FOLDER
+
+def get_private_folder():
+    return PRIVATE_FOLDER
 
 def load_yaml_file(file_path):
     configs = None
@@ -144,4 +149,14 @@ def load_data_migration(mapper,configs=None):
                 rule_obj.outputs.append(Output(db_credentials, table))
         
         
+def save_sensor_file(data):
+    sensor_path = os.path.join(get_private_folder(), SENSOR_FILENAME)
+    with open(sensor_path, "w") as file:
+        yaml.dump(data, file)
         
+def load_sensor_file():
+    sensor_path = os.path.join(get_private_folder(), SENSOR_FILENAME)
+    if not os.path.exists(sensor_path):
+        return {}
+    with open(sensor_path, "r") as file:
+        return yaml.safe_load(file)

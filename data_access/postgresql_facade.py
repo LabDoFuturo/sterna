@@ -1,5 +1,5 @@
 from data_access.postgresql_connection import PostgreSQLConnection
-from data_access.postgresql_data_access import PostgreSQLWriter, PostgresTableIterator, postgres_execute_DDL, postgres_commit
+from data_access.postgresql_data_access import PostgreSQLWriter, PostgresTableIterator, postgres_execute_DDL, postgres_commit, postgres_all_tables_names
 from data_access.postgresql_metadata_access import PostgreSQLTableManager
 from system_logging.log_manager import log, Level
 from data_access.utils import unique_timestamp_string_id
@@ -97,6 +97,11 @@ class PostgreSQLFacade:
         if not self.connection:
             raise Exception('Connection not created')
         postgres_execute_DDL(self.connection, sql)
+        
+    def tables_names(self):
+        if not self.connection:
+            raise Exception('Connection not created')
+        return postgres_all_tables_names(self.connection)
         
     def commit(self):
         if not self.connection:

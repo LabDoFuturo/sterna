@@ -22,6 +22,32 @@ def postgres_execute_DDL(postgresql, sql):
     finally:
         if cursor:
             cursor.close()
+            
+def postgres_all_tables_names(postgresql):
+    """
+    Retrieves the names of all tables in the PostgreSQL database.
+    
+    """
+    try:
+        connection = postgresql.connection
+        cursor = connection.cursor()
+        schema_name = postgresql.db_credentials.schema
+        sql = f"""
+            SELECT table_name
+            FROM information_schema.tables
+            WHERE table_schema = '{schema_name}'
+            AND table_type = 'BASE TABLE'
+        """
+        log(Level.DEBUG, f"Query: {sql}")
+        cursor.execute(sql)
+        table_names = [row[0] for row in cursor.fetchall()]
+        return table_names
+    except Exception as e:
+        log(Level.ERROR, f"Error getting table names from PostgreSQL")
+        raise e
+    finally:
+        if cursor:
+            cursor.close()
 
 def postgres_commit(postgresql):
     try:
