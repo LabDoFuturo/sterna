@@ -124,6 +124,7 @@ def load_data_migration(mapper,configs=None):
             raise Exception(f"Rule '{name}' has an invalid or empty 'outputs' section.")
 
         rule_obj = Rule(name)
+        rule_obj.skip = rule.get("skip", False)
         mapper.rules.append(rule_obj)
         
         for db, queries in (inputs or {}).items():

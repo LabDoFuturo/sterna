@@ -3,6 +3,7 @@ class Rule:
         self.name = name
         self.inputs = [] 
         self.outputs = []
+        self.skip = False
 
     def __str__(self):
         inputs_str = "\n".join(str(inp) for inp in self.inputs)

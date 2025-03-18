@@ -42,6 +42,11 @@ class Mapper:
         log(Level.INFO, '[data_migration] Starting data migration\n')
 
         for rule in self.rules:
+
+            if rule.skip:
+                log(Level.INFO, f"[data_migration] Rule {rule.name} skipped\n")
+                continue
+            
             start_time = time.perf_counter()
 
             # Check if the corresponding rule file exists
