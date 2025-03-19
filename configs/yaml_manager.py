@@ -108,6 +108,14 @@ def load_data_migration(mapper,configs=None):
 
         inputs = rule.get("inputs", None)
         outputs = rule.get("outputs", None)
+        setup = rule.get("setup", False)
+
+        if setup is True:
+            rule_obj = Rule(name)
+            rule_obj.skip = rule.get("skip", False)
+            mapper.rules.append(rule_obj)
+            return
+
 
         # Inputs not found
         if inputs is None:
