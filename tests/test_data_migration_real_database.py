@@ -34,7 +34,7 @@ INSERT INTO table_1 (name, age) VALUES ('Jill', 40);
 
 """ 
         self.rules_file = f"""
-def exec(inputs, outputs):
+def exec(inputs, outputs, context):
     # zip inputs and outputs
     for input, output in zip(inputs, outputs):
         input.create_connection(reuse=True)

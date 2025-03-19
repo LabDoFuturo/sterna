@@ -40,7 +40,7 @@ class Mapper:
 
     def start_migration(self):
         log(Level.INFO, '[data_migration] Starting data migration\n')
-
+        context = {}
         for rule in self.rules:
 
             if rule.skip:
@@ -85,7 +85,7 @@ class Mapper:
                     ))
                 
             
-            module.exec(database_inputs, database_outputs)
+            module.exec(database_inputs, database_outputs, context)
             DatabaseFactory().close_all_connections()
 
             end_time = time.perf_counter()

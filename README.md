@@ -297,12 +297,12 @@ data_migration:
   - `outputs:` Specifies the destination database and the target tables for inserting the extracted data.
 
 
-Each migration rule is defined as a Python file inside the `private/rules` directory. Each rule must implement a function named `exec(inputs, outputs)`, where inputs contain the extracted data from SQL queries, and outputs define the target tables for insertion. Multiple rules can be created to handle different migration scenarios, enabling flexible and modular data transformations.
+Each migration rule is defined as a Python file inside the `private/rules` directory. Each rule must implement a function named `exec(inputs, outputs, context)`, where inputs contain the extracted data from SQL queries, and outputs define the target tables for insertion. Multiple rules can be created to handle different migration scenarios, enabling flexible and modular data transformations. The `context` dictionary is shared between all rules and can be used to store general information.
 
 Example: `private/rules/rule_1.py`
 
 ```python
-def exec(inputs, outputs):
+def exec(inputs, outputs, context):
 ```
 
 The diagram below illustrates the definition of `rule_1` presented in the configuration example.
@@ -321,7 +321,7 @@ python -m data_migration
 ### Reading data from an input
 
 ```python
-def exec(inputs, outputs):
+def exec(inputs, outputs, context):
     
     input = inputs[0] # select first input
     
@@ -335,7 +335,7 @@ def exec(inputs, outputs):
 
 ```python
 
-def exec(inputs, outputs):
+def exec(inputs, outputs, context):
     
     output = outputs[1] # select first output
     output.create_connection()
