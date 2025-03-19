@@ -107,3 +107,14 @@ class PostgreSQLFacade:
         if not self.connection:
             raise Exception('Connection not created')
         postgres_commit(self.connection)
+
+    def simple_writer(self, reuse=True, table=None, buffer_size=None, bulk_commit=None, columns=None):
+        self.create_connection(reuse=reuse)
+        writer = self.writer(table=table, buffer_size=buffer_size, bulk_commit=bulk_commit)
+        if columns is not None:
+            writer.set_columns(columns)
+        return writer
+        
+    def simple_reader(self, reuse=True, table=None, query=None, batch_size=1000):
+        self.create_connection(reuse=reuse)
+        return self.reader(table=table, query=query, batch_size=batch_size)
