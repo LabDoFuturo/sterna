@@ -195,4 +195,5 @@ class PostgresTableIterator:
     def close(self):
         if self.cursor:
             self.cursor.close()
+            self.cursor = None
       

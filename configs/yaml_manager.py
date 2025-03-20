@@ -114,7 +114,7 @@ def load_data_migration(mapper,configs=None):
             rule_obj = Rule(name)
             rule_obj.skip = rule.get("skip", False)
             mapper.rules.append(rule_obj)
-            return
+            continue
 
 
         # Inputs not found

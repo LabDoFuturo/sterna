@@ -38,10 +38,11 @@ class PostgreSQLFacade:
     def close_connection(self):
         if not self.reuse and self.connection:
             self.connection.close()
-    
+            
     def close_all_connections():
         for conn in PostgreSQLFacade.connections_pool.values():
             conn.close()
+        PostgreSQLFacade.connections_pool = {}
             
     def writer(self, table=None, buffer_size=None, bulk_commit=None):
         if not table:
