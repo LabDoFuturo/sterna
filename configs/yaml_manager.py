@@ -7,7 +7,7 @@ import os
 PRIVATE_FOLDER = "private"
 RULES_FOLDER = f"{PRIVATE_FOLDER}/rules"
 GENERAL_CONFIGS_FILE = f"{PRIVATE_FOLDER}/configs.yml"
-SENSOR_FILENAME = "sensor.yml"
+SENSOR_FILENAME = "new_data_sensor.yml"
 
 
 def update_private_folder(folder):

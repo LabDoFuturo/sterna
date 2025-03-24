@@ -347,3 +347,35 @@ def exec(inputs, outputs, context):
     writer.commit() # do not forget to commit the changes
    
 ```
+
+
+# New Data Sensor 
+
+This script is designed to **detect the number of new tuples inserted into your databases**. It is particularly useful during data migration processes, as it provides a simple way to monitor changes across your tables.
+
+### Overview
+
+The `new_data_sensor` script performs the following tasks:
+
+- **Initial Run:** When executed for the first time, the script saves a snapshot in your `private` folder containing the current number of tuples for each table in your database.
+
+- **Subsequent Runs:** After performing data insertions, running the script again will compare the current state against the saved snapshot and display the tables along with the count of newly inserted tuples in the console.
+
+### Usage example
+
+To run the script using the default configuration file:
+
+
+```bash
+
+python -m data_quality.new_data_sensor -c private/configs.yml
+
+```
+
+If you prefer to use a different configuration file, pass your custom file as an argument:
+
+```bash
+
+python -m data_quality.new_data_sensor -c private/MY_CONFIGS_FILE.yml
+
+```
