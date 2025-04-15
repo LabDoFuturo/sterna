@@ -1,6 +1,7 @@
 import psycopg2
 import psycopg2.extras
 from psycopg2.extras import RealDictCursor
+from psycopg2.extensions import adapt
 
 from system_logging.log_manager import log, Level
 from data_access.utils import format_reserved_word
@@ -14,7 +15,7 @@ def postgres_execute_DDL(postgresql, sql):
     try:
         connection = postgresql.connection
         cursor = connection.cursor()
-        log(Level.DEBUG, f"Query: {sql}")
+        log(Level.SQL, f"Query: {sql}")
         cursor.execute(sql)
     except Exception as e:
         log(Level.ERROR, f"Error executing PostgreSQL DDL query")
@@ -38,7 +39,7 @@ def postgres_all_tables_names(postgresql):
             WHERE table_schema = '{schema_name}'
             AND table_type = 'BASE TABLE'
         """
-        log(Level.DEBUG, f"Query: {sql}")
+        log(Level.SQL, f"Query: {sql}")
         cursor.execute(sql)
         table_names = [row[0] for row in cursor.fetchall()]
         return table_names
@@ -119,6 +120,8 @@ class PostgreSQLWriter:
             psycopg2.extras.execute_values(self.cursor, self.insert_sql, self.buffer, template=self.template)
             num_inserted_rows = len(self.buffer)
             log(Level.DEBUG, f"Inserted {num_inserted_rows} rows into {self.schema}{self.table.name}.")
+            #log(Level.SQL, f"Query: {self.format_sql_log(self.insert_sql, self.buffer)}")
+            log(Level.SQL, f"Query: {self.insert_sql} {self.buffer}")
             self.buffer.clear()
         except Exception as e:
             log(Level.DEBUG, f"Error inserting data into PostgreSQL, table: {self.table.name}")
@@ -149,6 +152,11 @@ class PostgreSQLWriter:
             log(Level.ERROR, f"Error rollback data to PostgreSQL")
             raise e
         self.close_cursor()
+
+    #def format_sql_log(self, sql, values):
+    #    def adapt_row(row):
+    #        return "(" + ", ".join(adapt(v).getquoted().decode('utf-8', errors='backslashreplace') if v is not None else 'NULL' for v in row) + ")"
+    #    return f"{sql} VALUES {', '.join(adapt_row(row) for row in values)}"
         
         
 class PostgresTableIterator:
@@ -180,7 +188,7 @@ class PostgresTableIterator:
             
             if sql is None:
                 raise Exception("No query or table name provided.")
-            log(Level.DEBUG, f"Query: {sql}")
+            log(Level.SQL, f"Query: {sql}")
             self.cursor.execute(sql)
 
         if not self.current_batch:

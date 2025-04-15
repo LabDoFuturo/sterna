@@ -1,7 +1,9 @@
 import yaml
 from data_access.db_credentials import DBCredentials
 from system_logging.console_log import ConsoleLog
+from system_logging.file_log import FileLog
 from data_migration.rule import Rule, Input, Output
+from datetime import datetime
 import os
 
 PRIVATE_FOLDER = "private"
@@ -86,6 +88,16 @@ def load_system_logging(log_manager,configs=None):
         if name == 'console_log':
             levels = log['levels']
             log_manager.add_observer(ConsoleLog(levels))
+        if name == 'sql_file_log':
+            levels = log['levels']
+            timestamp = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
+            filename = f"{PRIVATE_FOLDER}/log_{timestamp}_sql.txt"
+            log_manager.add_observer(FileLog(levels, filename))
+        if name == 'file_log':
+            levels = log['levels']
+            timestamp = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
+            filename = f"{PRIVATE_FOLDER}/log_{timestamp}.txt"
+            log_manager.add_observer(FileLog(levels, filename))
                   
 def load_data_migration(mapper,configs=None):
     if configs is None:

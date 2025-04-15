@@ -36,7 +36,7 @@ class PostgreSQLTableManager:
                 FROM information_schema.columns
                 WHERE table_schema = '{schema_name}' AND table_name = '{self.table_name}'
             """
-            log(Level.DEBUG, f"Query: {sql}")
+            log(Level.SQL, f"Query: {sql}")
             self.cursor.execute(sql)
             columns = [
                 Column(
@@ -79,7 +79,7 @@ class PostgreSQLTableManager:
         try:
             self.cursor = self.postgresql.connection.cursor()
             sql = f"SELECT MAX({id_column}) FROM {self.schema}{self.table_name}"
-            log(Level.DEBUG, f"Query: {sql}")
+            log(Level.SQL, f"Query: {sql}")
             self.cursor.execute(sql)
             max_id = self.cursor.fetchone()[0]
             return max_id
@@ -97,7 +97,7 @@ class PostgreSQLTableManager:
         try:
             self.cursor = self.postgresql.connection.cursor()
             sql = f"TRUNCATE TABLE {self.schema}{self.table_name} CASCADE"
-            log(Level.DEBUG, f"Query: {sql}")
+            log(Level.SQL, f"Query: {sql}")
             self.cursor.execute(sql)
             self.postgresql.connection.commit()
             log(Level.INFO, f"Table {self.schema}{self.table_name} truncated.")
@@ -115,7 +115,7 @@ class PostgreSQLTableManager:
         try:
             self.cursor = self.postgresql.connection.cursor()
             sql = f"ALTER SEQUENCE {self.schema}{self.table_name}_id_seq RESTART WITH 1"
-            log(Level.DEBUG, f"Query: {sql}")
+            log(Level.SQL, f"Query: {sql}")
             self.cursor.execute(sql)
             self.postgresql.connection.commit()
             log(Level.INFO, f"Sequence for table {self.schema}{self.table_name} reset.")
@@ -133,7 +133,7 @@ class PostgreSQLTableManager:
         try:
             self.cursor = self.postgresql.connection.cursor()
             sql = f"SELECT last_value FROM {self.schema}{self.table_name}_id_seq"
-            log(Level.DEBUG, f"Query: {sql}")
+            log(Level.SQL, f"Query: {sql}")
             self.cursor.execute(sql)
             current_value = self.cursor.fetchone()[0]
             return current_value
@@ -151,7 +151,7 @@ class PostgreSQLTableManager:
         try:
             self.cursor = self.postgresql.connection.cursor()
             sql = f"SELECT setval('{self.schema}{self.table_name}_id_seq', %s, false)"
-            log(Level.DEBUG, f"Query: {sql}")
+            log(Level.SQL, f"Query: {sql}")
             self.cursor.execute(sql, (value,))
             self.postgresql.connection.commit()
             log(Level.INFO, f"Sequence value for table {self.schema}{self.table_name} set to {value}.")

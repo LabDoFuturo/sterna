@@ -9,6 +9,7 @@ class Level:
     WARNING = "WARNING"
     INFO = "INFO"
     DEBUG = "DEBUG"
+    SQL = "SQL"
 
 
 class LogManager:
