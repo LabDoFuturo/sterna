@@ -13,6 +13,9 @@ def remove_whitespace(text):
         return None
     return "".join(text.split())
 
+def remove_symbols(text):
+    return re.sub(r'[^a-zA-Z0-9 ]', '', text)
+
 def remove_non_numeric(text):
     if text is None:
       return None
