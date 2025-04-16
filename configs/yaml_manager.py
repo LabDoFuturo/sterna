@@ -91,12 +91,12 @@ def load_system_logging(log_manager,configs=None):
         if name == 'sql_file_log':
             levels = log['levels']
             timestamp = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
-            filename = f"{PRIVATE_FOLDER}/log_{timestamp}_sql.txt"
+            filename = f"{PRIVATE_FOLDER}/logs/log_{timestamp}_sql.txt"
             log_manager.add_observer(FileLog(levels, filename))
         if name == 'file_log':
             levels = log['levels']
             timestamp = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
-            filename = f"{PRIVATE_FOLDER}/log_{timestamp}.txt"
+            filename = f"{PRIVATE_FOLDER}/logs/log_{timestamp}.txt"
             log_manager.add_observer(FileLog(levels, filename))
                   
 def load_data_migration(mapper,configs=None):
