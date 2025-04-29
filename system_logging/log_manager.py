@@ -10,6 +10,7 @@ class Level:
     INFO = "INFO"
     DEBUG = "DEBUG"
     SQL = "SQL"
+    ID = "ID"
 
 
 class LogManager:

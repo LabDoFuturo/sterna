@@ -98,6 +98,11 @@ def load_system_logging(log_manager,configs=None):
             timestamp = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
             filename = f"{PRIVATE_FOLDER}/logs/log_{timestamp}.txt"
             log_manager.add_observer(FileLog(levels, filename))
+        if name == 'ids_log':
+            levels = log['levels']
+            timestamp = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
+            filename = f"{PRIVATE_FOLDER}/logs/log_{timestamp}_ids.txt"
+            log_manager.add_observer(FileLog(levels, filename))
                   
 def load_data_migration(mapper,configs=None):
     if configs is None:

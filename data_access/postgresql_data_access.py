@@ -4,6 +4,7 @@ from psycopg2.extras import RealDictCursor
 from psycopg2.extensions import adapt
 
 from system_logging.log_manager import log, Level
+from system_logging.ids_log_manager import log_id
 from data_access.utils import format_reserved_word
 
 
@@ -86,6 +87,7 @@ class PostgreSQLWriter:
         self.cursor = None
         if table.columns:
             self.set_columns([(column.name) for column in self.table.columns])
+        self.orderned_columns = None
         
         
     def set_columns(self, columns):
@@ -95,8 +97,9 @@ class PostgreSQLWriter:
         for column in columns:
             parts.append("%s")
         self.template = f"({', '.join(parts)})"
+        self.orderned_columns = columns
 
-    def insert(self, data):
+    def insert(self, data, logging_ids=True, logging_ids_key=None):
         """
         Inserts a row of data into the buffer. If the buffer size is reached, flushes the buffer.
 
@@ -104,6 +107,8 @@ class PostgreSQLWriter:
         if isinstance(data, dict):
             data = [data[column.name] for column in self.table.columns]
         self.buffer.append(data)
+        if logging_ids:
+            log_id(self.schema, self.table, self.orderned_columns, data, logging_ids_key=logging_ids_key)
         if len(self.buffer) >= self.buffer_size:
             return self.flush_buffer()
         return False
